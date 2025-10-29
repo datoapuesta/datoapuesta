@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Actualizar Partidos Hoy</title>
+</head>
+<body>
+  <h1>Actualizar Partidos Hoy</h1>
+  <button id="btnActualizar">Actualizar Partidos</button>
+  <p id="status"></p>
+
+  <script>
+    // PONÉ TU API KEY AQUÍ (NO SUBIR A GitHub)
+    const API_KEY = "456b7873e0b045fc9a59963b3f9e3ed8";
+
+    // Ligas que vamos a consultar
+    const ligas = [
+      // Sudamérica
+      { country: "Argentina", league: "Primera" },
+      { country: "Argentina", league: "B Nacional" },
+      { country: "Argentina", league: "B Metropolitana" },
+      { country: "Brasil", league: "Serie A" },
+      { country: "Brasil", league: "Serie B" },
+      { country: "Chile", league: "Primera" },
+      { country: "Chile", league: "Primera B" },
+      { country: "Colombia", league: "Primera A" },
+      { country: "Colombia", league: "Primera B" },
+      { country: "Ecuador", league: "Serie A" },
+      { country: "Ecuador", league: "Serie B" },
+      { country: "Perú", league: "Liga 1" },
+      { country: "Perú", league: "Liga 2" },
+      { country: "Bolivia", league: "División Profesional" },
+      { country: "Uruguay", league: "Primera" },
+      { country: "Uruguay", league: "Segunda" },
+      { country: "Venezuela", league: "Primera" },
+      { country: "Venezuela", league: "Segunda" },
+
+      // Europa
+      { country: "Italia", league: "Serie A" },
+      { country: "Italia", league: "Serie B" },
+      { country: "España", league: "LaLiga" },
+      { country: "España", league: "LaLiga 2" },
+      { country: "Inglaterra", league: "Premier" },
+      { country: "Inglaterra", league: "Championship" },
+      { country: "Francia", league: "Ligue 1" },
+      { country: "Francia", league: "Ligue 2" },
+      { country: "Portugal", league: "Primeira" },
+      { country: "Portugal", league: "Segunda" },
+      { country: "Alemania", league: "Bundesliga" },
+      { country: "Alemania", league: "Bundesliga 2" },
+      { country: "Bélgica", league: "Primera División" },
+      { country: "Holanda", league: "Eredivisie" },
+
+      // Resto del mundo
+      { country: "Arabia Saudita", league: "Saudi Pro League" },
+      { country: "Estados Unidos", league: "MLS" },
+      { country: "México", league: "Liga MX" }
+    ];
+
+    const btn = document.getElementById("btnActualizar");
+    const status = document.getElementById("status");
+
+    btn.addEventListener("click", async () => {
+      status.textContent = "Actualizando...";
+
+      let partidosHoy = [];
+
+      for (const liga of ligas) {
+        try {
+          // Hacemos la petición a API Football
+          const res = await fetch(`https://v3.football.api-sports.io/fixtures?league=${liga.league}&season=2025&from=${new Date().toISOString().split("T")[0]}&to=${new Date().toISOString().split("T")[0]}`, {
+            headers: { "x-apisports-key": API_KEY }
+          });
+          const data = await res.json();
+
+          if (data.response) {
+            data.response.forEach(fixture => {
+              partidosHoy.push({
+                country: liga.country,
+                league: liga.league,
+                home: fixture.teams.home.name,
+                away: fixture.teams.away.name,
+                time: fixture.fixture.date.split("T")[1].substring(0,5) // hh:mm
+              });
+            });
+          }
+        } catch(e) {
+          console.error(`Error liga ${liga.league}:`, e);
+        }
+      }
+
+      // Convertimos a JSON y lo mostramos
+      const jsonStr = JSON.stringify(partidosHoy, null, 2);
+      console.log(jsonStr);
+
+      // Podés copiar y pegar este JSON en /data/partidos-hoy.json
+      status.textContent = `Actualizado! Copiá el JSON del console.log a /data/partidos-hoy.json`;
+      alert("Se terminó de actualizar, revisá la consola para el JSON");
+    });
+  </script>
+</body>
+</html>
