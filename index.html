@@ -27,13 +27,13 @@
   .close { background:#c3073f; float:right; padding:5px 10px; border-radius:6px; cursor:pointer; }
 
   /* Colores suaves por país */
-  .Argentina { border-left:5px solid #75aadb; }
-  .Brasil { border-left:5px solid #00a86b; }
-  .Inglaterra { border-left:5px solid #1e3a8a; }
-  .España { border-left:5px solid #e53935; }
-  .Italia { border-left:5px solid #007f4f; }
-  .Alemania { border-left:5px solid #000; }
-  .Francia { border-left:5px solid #0055a4; }
+  .argentina { border-left:5px solid #75aadb; }
+  .brasil { border-left:5px solid #00a86b; }
+  .inglaterra { border-left:5px solid #1e3a8a; }
+  .españa { border-left:5px solid #e53935; }
+  .italia { border-left:5px solid #007f4f; }
+  .alemania { border-left:5px solid #000; }
+  .francia { border-left:5px solid #0055a4; }
 
   /* Mobile responsive */
   @media (max-width: 768px) {
@@ -67,21 +67,9 @@ const API_KEY = "58587099b74e80acd927232e2fbf71df";
 const matchesDiv = document.getElementById("matches");
 
 const leagueColors = {
-  "Argentina":"Argentina","Brasil":"Brasil","Inglaterra":"Inglaterra",
-  "España":"España","Italia":"Italia","Alemania":"Alemania","Francia":"Francia"
+  "Argentina":"argentina","Brazil":"brasil","England":"inglaterra",
+  "Spain":"españa","Italy":"italia","Germany":"alemania","France":"francia"
 };
-
-const countryNames = {
-  "Italy": "Italia",
-  "France": "Francia",
-  "Brazil": "Brasil",
-  "England": "Inglaterra",
-  "Spain": "España",
-  "Germany": "Alemania",
-  "Argentina": "Argentina"
-};
-
-const ligasPermitidas = ["Primera Division","Serie A","Serie B","Premier League","La Liga","Bundesliga","Ligue 1"];
 
 async function getMatches(){
   const today = new Date().toISOString().split("T")[0];
@@ -90,13 +78,13 @@ async function getMatches(){
   });
   const data = await res.json();
 
-  // Filtramos solo ligas permitidas
-  const filtered = data.response.filter(m => ligasPermitidas.includes(m.league.name));
+  const filtered = data.response.filter(m =>
+    ["Primera Division","Serie A","Serie B","Premier League","La Liga","Bundesliga","Ligue 1"].includes(m.league.name)
+  );
 
-  // Agrupamos por país
   const grouped = {};
   filtered.forEach(m=>{
-    const country = countryNames[m.league.country] || m.league.country;
+    const country = m.league.country;
     if(!grouped[country]) grouped[country]=[];
     grouped[country].push(m);
   });
@@ -113,6 +101,7 @@ async function getMatches(){
       const utcDate=new Date(m.fixture.date);
       const localTime=new Intl.DateTimeFormat("es-AR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(utcDate);
 
+      // Destacar próximos partidos (en 3 horas)
       const isUpcoming = utcDate - now > 0 && utcDate - now < 3*60*60*1000 ? "upcoming" : "";
 
       match.className=`match ${isUpcoming}`;
