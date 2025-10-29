@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agenda Deportiva - DatoApuesta</title>
+<style>
+  body { font-family: "Poppins", sans-serif; background:#0b0c10; color:#fff; margin:0; padding:0;}
+  header { background:#1f2833; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; }
+  header h1 { margin:0; font-size:1.5em; letter-spacing:1px; }
+  nav a { color:#66fcf1; text-decoration:none; font-weight:600; margin-left:15px; }
+  nav a:hover { color:#45a29e; }
+
+  .league { margin:20px auto; width:90%; background:#171a21; border-radius:12px; padding:10px 15px; box-shadow:0 0 10px rgba(255,255,255,0.05);}
+  .league h2 { text-transform:uppercase; margin:5px 0 10px; font-size:1.2em;}
+  .match { background:#222831; padding:12px; border-radius:10px; margin:10px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
+  .match span { display:block; margin:3px 0;}
+  button { background:#45a29e; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s;}
+  button:hover { background:#66fcf1; color:#000;}
+
+  .modal { display:none; position:fixed; z-index:10; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); justify-content:center; align-items:center;}
+  .modal-content { background:#1f2833; border-radius:15px; padding:20px; width:90%; max-width:400px; text-align:left;}
+  .modal-content h3 { margin-top:0;}
+  .close { background:#c3073f; float:right; padding:5px 10px; border-radius:6px; cursor:pointer;}
+
+  .argentina { border-left:5px solid #75aadb;}
+  .brasil { border-left:5px solid #009739;}
+  .inglaterra { border-left:5px solid #00247d;}
+  .españa { border-left:5px solid #aa151b;}
+  .italia { border-left:5px solid #009246;}
+  .alemania { border-left:5px solid #000;}
+  .francia { border-left:5px solid #0055a4;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ Agenda Deportiva - DatoApuesta</h1>
+  <nav>
+    <a href="live.html">Ver Fútbol en Vivo</a>
+  </nav>
+</header>
+
+<div id="matches"></div>
+
+<div id="statsModal" class="modal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">Cerrar</button>
+    <h3 id="modalTitle">Estadísticas del Partido</h3>
+    <div id="modalBody">Cargando...</div>
+  </div>
+</div>
+
+<script>
+const API_KEY = "58587099b74e80acd927232e2fbf71df";
+const matchesDiv = document.getElementById("matches");
+
+const leagueColors = {
+  "Argentina": "argentina", "Brazil":"brasil","England":"inglaterra",
+  "Spain":"españa","Italy":"italia","Germany":"alemania","France":"francia"
+};
+
+// Cargar partidos de hoy
+async function getMatches() {
+  const today = new Date().toISOString().split("T")[0];
+  const res = await fetch(`https://v3.football.api-sports.io/fixtures?date=${today}`,{
+    headers: { "x-apisports-key": API_KEY }
+  });
+  const data = await res.json();
+
+  const filtered = data.response.filter(m =>
+    ["Primera Division","Serie A","Serie B","Premier League","La Liga","Bundesliga","Ligue 1"].includes(m.league.name)
+  );
+
+  const grouped = {};
+  filtered.forEach(m => {
+    const country = m.league.country;
+    if(!grouped[country]) grouped[country] = [];
+    grouped[country].push(m);
+  });
+
+  matchesDiv.innerHTML="";
+  for(const country in grouped){
+    const div = document.createElement("div");
+    const colorClass = leagueColors[country] || "";
+    div.className=`league ${colorClass}`;
+    div.innerHTML=`<h2>${country}</h2>`;
+
+    grouped[country].forEach(m=>{
+      const match = document.createElement("div");
+      match.className="match";
+      const utcDate = new Date(m.fixture.date);
+      const localTime = new Intl.DateTimeFormat("es-AR",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:m.league.timezone}).format(utcDate);
+
+      match.innerHTML=`
+        <div>
+          <span><b>${m.teams.home.name}</b> vs <b>${m.teams.away.name}</b></span>
+          <span>${localTime} hrs</span>
+          <span>${m.league.name}</span>
+        </div>
+        <button onclick="showStats(${m.teams.home.id},${m.teams.away.id},'${m.teams.home.name}','${m.teams.away.name}')">Ver estadísticas 📊</button>
+      `;
+      div.appendChild(match);
+    });
+    matchesDiv.appendChild(div);
+  }
+}
+
+// Mostrar estadísticas H2H
+async function showStats(homeId, awayId, homeName, awayName){
+  document.getElementById("modalTitle").innerText=`${homeName} vs ${awayName}`;
+  document.getElementById("modalBody").innerHTML="Cargando...";
+
+  try {
+    const res = await fetch(`https://v3.football.api-sports.io/fixtures/headtohead?h2h=${homeId}-${awayId}`,{
+      headers: { "x-apisports-key": API_KEY }
+    });
+    const data = await res.json();
+    if(!data.response || data.response.length===0){
+      document.getElementById("modalBody").innerHTML="<p>No hay datos de enfrentamientos.</p>";
+      return;
+    }
+
+    const ultimos = data.response.slice(0,5).map(f=>{
+      const fecha = new Date(f.fixture.date).toLocaleDateString();
+      return `${fecha} → ${f.teams.home.name} ${f.goals.home}-${f.goals.away} ${f.teams.away.name}`;
+    }).join("<br>");
+
+    function getForm(teamId){
+      const ultimos5 = data.response.filter(d=>d.teams.home.id===teamId || d.teams.away.id===teamId).slice(0,5);
+      return ultimos5.map(g=>{
+        const esHome = g.teams.home.id===teamId;
+        const goles = esHome ? [g.goals.home, g.goals.away] : [g.goals.away, g.goals.home];
+        if(goles[0] > goles[1]) return "🟢";
+        else if(goles[0] === goles[1]) return "🟡";
+        else return "🔴";
+      }).join("");
+    }
+
+    document.getElementById("modalBody").innerHTML=`
+      <p><b>Últimos enfrentamientos:</b><br>${ultimos}</p>
+      <p><b>Racha reciente:</b><br>${homeName}: ${getForm(homeId)}<br>${awayName}: ${getForm(awayId)}</p>
+    `;
+
+  } catch(err){
+    document.getElementById("modalBody").innerHTML="<p>Error al cargar estadísticas.</p>";
+    console.log(err);
+  }
+
+  document.getElementById("statsModal").style.display="flex";
+}
+
+function closeModal(){ document.getElementById("statsModal").style.display="none"; }
+
+getMatches();
+</script>
+</body>
+</html>
