@@ -8,14 +8,14 @@
   <h1>Actualizar Partidos Hoy</h1>
   <button id="btnActualizar">Actualizar Partidos</button>
   <p id="status"></p>
+  <pre id="jsonOutput" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
 
   <script>
-    // PONÉ TU API KEY AQUÍ (NO SUBIR A GitHub)
+    // PONÉ TU API KEY AQUÍ
     const API_KEY = "456b7873e0b045fc9a59963b3f9e3ed8";
 
     // Ligas que vamos a consultar
     const ligas = [
-      // Sudamérica
       { country: "Argentina", league: "Primera" },
       { country: "Argentina", league: "B Nacional" },
       { country: "Argentina", league: "B Metropolitana" },
@@ -34,8 +34,6 @@
       { country: "Uruguay", league: "Segunda" },
       { country: "Venezuela", league: "Primera" },
       { country: "Venezuela", league: "Segunda" },
-
-      // Europa
       { country: "Italia", league: "Serie A" },
       { country: "Italia", league: "Serie B" },
       { country: "España", league: "LaLiga" },
@@ -50,8 +48,6 @@
       { country: "Alemania", league: "Bundesliga 2" },
       { country: "Bélgica", league: "Primera División" },
       { country: "Holanda", league: "Eredivisie" },
-
-      // Resto del mundo
       { country: "Arabia Saudita", league: "Saudi Pro League" },
       { country: "Estados Unidos", league: "MLS" },
       { country: "México", league: "Liga MX" }
@@ -59,15 +55,16 @@
 
     const btn = document.getElementById("btnActualizar");
     const status = document.getElementById("status");
+    const output = document.getElementById("jsonOutput");
 
     btn.addEventListener("click", async () => {
-      status.textContent = "Actualizando...";
+      status.textContent = "Actualizando…";
+      output.textContent = "";
 
       let partidosHoy = [];
 
       for (const liga of ligas) {
         try {
-          // Hacemos la petición a API Football
           const res = await fetch(`https://v3.football.api-sports.io/fixtures?league=${liga.league}&season=2025&from=${new Date().toISOString().split("T")[0]}&to=${new Date().toISOString().split("T")[0]}`, {
             headers: { "x-apisports-key": API_KEY }
           });
@@ -89,13 +86,9 @@
         }
       }
 
-      // Convertimos a JSON y lo mostramos
       const jsonStr = JSON.stringify(partidosHoy, null, 2);
-      console.log(jsonStr);
-
-      // Podés copiar y pegar este JSON en /data/partidos-hoy.json
-      status.textContent = `Actualizado! Copiá el JSON del console.log a /data/partidos-hoy.json`;
-      alert("Se terminó de actualizar, revisá la consola para el JSON");
+      output.textContent = jsonStr;
+      status.textContent = "¡Actualizado! Copiá el JSON y pegalo en /data/partidos-hoy.json";
     });
   </script>
 </body>
