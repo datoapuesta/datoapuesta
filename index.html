@@ -27,13 +27,13 @@
   .close { background:#c3073f; float:right; padding:5px 10px; border-radius:6px; cursor:pointer; }
 
   /* Colores suaves por país */
-  .argentina { border-left:5px solid #75aadb; }
-  .brasil { border-left:5px solid #00a86b; }
-  .inglaterra { border-left:5px solid #1e3a8a; }
-  .españa { border-left:5px solid #e53935; }
-  .italia { border-left:5px solid #007f4f; }
-  .alemania { border-left:5px solid #000; }
-  .francia { border-left:5px solid #0055a4; }
+  .Argentina { border-left:5px solid #75aadb; }
+  .Brasil { border-left:5px solid #00a86b; }
+  .Inglaterra { border-left:5px solid #1e3a8a; }
+  .España { border-left:5px solid #e53935; }
+  .Italia { border-left:5px solid #007f4f; }
+  .Alemania { border-left:5px solid #000; }
+  .Francia { border-left:5px solid #0055a4; }
 
   /* Mobile responsive */
   @media (max-width: 768px) {
@@ -67,8 +67,8 @@ const API_KEY = "58587099b74e80acd927232e2fbf71df";
 const matchesDiv = document.getElementById("matches");
 
 const leagueColors = {
-  "Argentina":"argentina","Brasil":"brasil","Inglaterra":"inglaterra",
-  "España":"españa","Italia":"italia","Alemania":"alemania","Francia":"francia"
+  "Argentina":"Argentina","Brasil":"Brasil","Inglaterra":"Inglaterra",
+  "España":"España","Italia":"Italia","Alemania":"Alemania","Francia":"Francia"
 };
 
 const countryNames = {
@@ -81,6 +81,8 @@ const countryNames = {
   "Argentina": "Argentina"
 };
 
+const ligasPermitidas = ["Primera Division","Serie A","Serie B","Premier League","La Liga","Bundesliga","Ligue 1"];
+
 async function getMatches(){
   const today = new Date().toISOString().split("T")[0];
   const res = await fetch(`https://v3.football.api-sports.io/fixtures?date=${today}`,{
@@ -88,10 +90,10 @@ async function getMatches(){
   });
   const data = await res.json();
 
-  const filtered = data.response.filter(m =>
-    ["Primera Division","Serie A","Serie B","Premier League","La Liga","Bundesliga","Ligue 1"].includes(m.league.name)
-  );
+  // Filtramos solo ligas permitidas
+  const filtered = data.response.filter(m => ligasPermitidas.includes(m.league.name));
 
+  // Agrupamos por país
   const grouped = {};
   filtered.forEach(m=>{
     const country = countryNames[m.league.country] || m.league.country;
