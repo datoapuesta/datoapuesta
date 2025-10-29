@@ -1,2 +1,56 @@
+[
+  {"country":"Argentina","league":"Primera","home":"Boca Juniors","away":"Racing Club","time":"19:30"},
+  {"country":"Argentina","league":"Primera B Nacional","home":"Belgrano","away":"Sarmiento","time":"17:00"},
+  {"country":"Argentina","league":"B Metropolitana","home":"All Boys","away":"Atlanta","time":"15:00"},
 
-[]
+  {"country":"Brasil","league":"Serie A","home":"Fluminense","away":"Ceará","time":"19:00"},
+  {"country":"Brasil","league":"Serie A","home":"Flamengo","away":"Palmeiras","time":"21:00"},
+  {"country":"Brasil","league":"Serie B","home":"Cruzeiro","away":"Vasco","time":"18:00"},
+
+  {"country":"Chile","league":"Primera","home":"Colo Colo","away":"Universidad de Chile","time":"18:00"},
+  {"country":"Chile","league":"Primera B","home":"Ñublense","away":"Deportes Copiapó","time":"16:30"},
+
+  {"country":"Colombia","league":"Primera A","home":"Atlético Nacional","away":"Millonarios","time":"19:00"},
+  {"country":"Colombia","league":"Primera B","home":"Boyacá Chicó","away":"Cúcuta","time":"17:30"},
+
+  {"country":"Ecuador","league":"Serie A","home":"Independiente del Valle","away":"Emelec","time":"20:00"},
+  {"country":"Ecuador","league":"Serie B","home":"Manta","away":"Olmedo","time":"18:00"},
+
+  {"country":"Uruguay","league":"Primera","home":"Peñarol","away":"Nacional","time":"19:30"},
+  {"country":"Uruguay","league":"Segunda","home":"Cerrito","away":"Miramar","time":"17:00"},
+
+  {"country":"Perú","league":"Liga 1","home":"Alianza Lima","away":"Universitario","time":"20:00"},
+  {"country":"Perú","league":"Liga 2","home":"César Vallejo","away":"Sport Boys","time":"18:00"},
+
+  {"country":"Bolivia","league":"División Profesional","home":"The Strongest","away":"Oriente Petrolero","time":"19:00"},
+
+  {"country":"Venezuela","league":"Primera","home":"Caracas FC","away":"Deportivo Táchira","time":"18:00"},
+  {"country":"Venezuela","league":"Segunda","home":"Trujillanos","away":"Monagas","time":"16:30"},
+
+  {"country":"Italia","league":"Serie A","home":"Juventus","away":"Udinese","time":"18:30"},
+  {"country":"Italia","league":"Serie B","home":"Brescia","away":"Palermo","time":"16:00"},
+
+  {"country":"España","league":"LaLiga","home":"Barcelona","away":"Real Madrid","time":"18:00"},
+  {"country":"España","league":"LaLiga 2","home":"Almería","away":"Valladolid","time":"16:00"},
+
+  {"country":"Inglaterra","league":"Premier","home":"Manchester United","away":"Liverpool","time":"15:00"},
+  {"country":"Inglaterra","league":"Championship","home":"Sheffield United","away":"West Brom","time":"17:00"},
+
+  {"country":"Francia","league":"Ligue 1","home":"PSG","away":"Lyon","time":"20:00"},
+  {"country":"Francia","league":"Ligue 2","home":"Troyes","away":"Grenoble","time":"18:30"},
+
+  {"country":"Portugal","league":"Primeira","home":"Benfica","away":"Porto","time":"19:00"},
+  {"country":"Portugal","league":"Segunda","home":"Sporting Covilhã","away":"Académica","time":"17:30"},
+
+  {"country":"Alemania","league":"Bundesliga","home":"Bayern Munich","away":"Borussia Dortmund","time":"18:30"},
+  {"country":"Alemania","league":"Bundesliga 2","home":"Hamburgo","away":"Nürnberg","time":"16:00"},
+
+  {"country":"Bélgica","league":"Primera División","home":"Club Brugge","away":"Anderlecht","time":"19:00"},
+  {"country":"Holanda","league":"Eredivisie","home":"Ajax","away":"PSV","time":"18:30"},
+
+  {"country":"Arabia Saudita","league":"Saudi Pro League","home":"Al-Nassr","away":"Al-Hilal","time":"20:00"},
+
+  {"country":"Estados Unidos","league":"MLS","home":"Inter Miami","away":"LA Galaxy","time":"21:00"},
+
+  {"country":"México","league":"Liga MX","home":"América","away":"Chivas","time":"21:00"}
+]
