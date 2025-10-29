@@ -13,8 +13,11 @@
 
   .league { margin:20px auto; width:90%; background:#171a21; border-radius:12px; padding:12px 20px; box-shadow:0 0 10px rgba(255,255,255,0.05);}
   .league h2 { text-transform:uppercase; margin:5px 0 12px; font-size:1.25em; }
-  .match { background:#222831; padding:12px; border-radius:10px; margin:10px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+  .match { background:#222831; padding:12px; border-radius:10px; margin:10px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; transition:0.2s; }
   .match span { display:block; margin:3px 0; }
+  .match:hover { background:#2e333f; }
+  .upcoming { border-left:5px solid #ffd700; }
+
   button { background:#45a29e; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s; }
   button:hover { background:#66fcf1; color:#000; }
 
@@ -31,6 +34,13 @@
   .italia { border-left:5px solid #007f4f; }
   .alemania { border-left:5px solid #000; }
   .francia { border-left:5px solid #0055a4; }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    header { flex-direction: column; align-items: flex-start; padding: 10px; }
+    header h1 { font-size: 1.3em; margin-bottom: 5px; }
+    nav a { margin-left: 0; margin-right: 15px; display:inline-block; margin-bottom:5px; }
+  }
 </style>
 </head>
 <body>
@@ -80,6 +90,7 @@ async function getMatches(){
   });
 
   matchesDiv.innerHTML="";
+  const now = new Date();
   for(const country in grouped){
     const div=document.createElement("div");
     const colorClass=leagueColors[country]||"";
@@ -87,10 +98,13 @@ async function getMatches(){
     div.innerHTML=`<h2>${country}</h2>`;
     grouped[country].forEach(m=>{
       const match=document.createElement("div");
-      match.className="match";
       const utcDate=new Date(m.fixture.date);
       const localTime=new Intl.DateTimeFormat("es-AR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(utcDate);
 
+      // Destacar próximos partidos (en 3 horas)
+      const isUpcoming = utcDate - now > 0 && utcDate - now < 3*60*60*1000 ? "upcoming" : "";
+
+      match.className=`match ${isUpcoming}`;
       match.innerHTML=`
         <div>
           <span><b>${m.teams.home.name}</b> vs <b>${m.teams.away.name}</b></span>
