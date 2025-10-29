@@ -67,8 +67,18 @@ const API_KEY = "58587099b74e80acd927232e2fbf71df";
 const matchesDiv = document.getElementById("matches");
 
 const leagueColors = {
-  "Argentina":"argentina","Brazil":"brasil","England":"inglaterra",
-  "Spain":"españa","Italy":"italia","Germany":"alemania","France":"francia"
+  "Argentina":"argentina","Brasil":"brasil","Inglaterra":"inglaterra",
+  "España":"españa","Italia":"italia","Alemania":"alemania","Francia":"francia"
+};
+
+const countryNames = {
+  "Italy": "Italia",
+  "France": "Francia",
+  "Brazil": "Brasil",
+  "England": "Inglaterra",
+  "Spain": "España",
+  "Germany": "Alemania",
+  "Argentina": "Argentina"
 };
 
 async function getMatches(){
@@ -84,7 +94,7 @@ async function getMatches(){
 
   const grouped = {};
   filtered.forEach(m=>{
-    const country = m.league.country;
+    const country = countryNames[m.league.country] || m.league.country;
     if(!grouped[country]) grouped[country]=[];
     grouped[country].push(m);
   });
@@ -101,7 +111,6 @@ async function getMatches(){
       const utcDate=new Date(m.fixture.date);
       const localTime=new Intl.DateTimeFormat("es-AR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(utcDate);
 
-      // Destacar próximos partidos (en 3 horas)
       const isUpcoming = utcDate - now > 0 && utcDate - now < 3*60*60*1000 ? "upcoming" : "";
 
       match.className=`match ${isUpcoming}`;
