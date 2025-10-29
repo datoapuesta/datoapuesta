@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dato Apuesta ⚽ Fútbol en Vivo</title>
+<style>
+  body { font-family:"Poppins",sans-serif; background:#0b0c10; color:#fff; margin:0; padding:0; }
+  header { background:#1f2833; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+  header h1 { margin:0; font-size:1.6em; letter-spacing:1px; }
+  nav a { color:#66fcf1; text-decoration:none; font-weight:600; margin-left:20px; }
+  nav a:hover { color:#45a29e; }
+
+  .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; padding:20px; }
+  .channel { background:#222831; border-radius:12px; display:flex; justify-content:center; align-items:center; height:120px; cursor:pointer; transition:0.2s; flex-direction:column; }
+  .channel:hover { background:#2e333f; }
+  .channel img { max-width:80px; max-height:60px; margin-bottom:10px; }
+
+  /* Modal */
+  .modal { display:none; position:fixed; z-index:10; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.9); justify-content:center; align-items:center; }
+  .modal-content { background:#1f2833; border-radius:15px; padding:20px; width:90%; max-width:800px; text-align:center; }
+  .close { background:#c3073f; color:#fff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; float:right; font-weight:600; }
+
+  @media(max-width:768px){
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media(max-width:480px){
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dato Apuesta ⚽ Fútbol en Vivo</h1>
+  <nav>
+    <a href="index.html">Volver a Agenda</a>
+  </nav>
+</header>
+
+<div class="grid" id="channels">
+  <!-- Canales se agregan dinámicamente -->
+</div>
+
+<div class="modal" id="embedModal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">Cerrar</button>
+    <div id="embedContainer" style="margin-top:20px;">
+      <!-- Embed se insertará aquí -->
+    </div>
+  </div>
+</div>
+
+<script>
+const channelsData = [
+  {name:"Canal 1", logo:"https://via.placeholder.com/80x60?text=C1", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"},
+  {name:"Canal 2", logo:"https://via.placeholder.com/80x60?text=C2", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"},
+  {name:"Canal 3", logo:"https://via.placeholder.com/80x60?text=C3", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"},
+  {name:"Canal 4", logo:"https://via.placeholder.com/80x60?text=C4", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"},
+  {name:"Canal 5", logo:"https://via.placeholder.com/80x60?text=C5", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"},
+  {name:"Canal 6", logo:"https://via.placeholder.com/80x60?text=C6", embed:"<iframe src='#' width='100%' height='400' frameborder='0'></iframe>"}
+];
+
+const channelsDiv = document.getElementById("channels");
+
+channelsData.forEach((c, index)=>{
+  const div = document.createElement("div");
+  div.className="channel";
+  div.innerHTML=`<img src="${c.logo}" alt="${c.name}"><span>${c.name}</span>`;
+  div.onclick = () => openModal(c.embed);
+  channelsDiv.appendChild(div);
+});
+
+function openModal(embedHtml){
+  document.getElementById("embedContainer").innerHTML = embedHtml;
+  document.getElementById("embedModal").style.display = "flex";
+}
+
+function closeModal(){
+  document.getElementById("embedModal").style.display="none";
+  document.getElementById("embedContainer").innerHTML="";
+}
+</script>
+
+</body>
+</html>
