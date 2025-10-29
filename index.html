@@ -1,151 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dato Apuesta ⚽ Agenda de Hoy</title>
-<style>
-body { font-family:"Poppins",sans-serif; background:#0b0c10; color:#fff; margin:0; padding:0; }
-header { background:#1f2833; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
-header h1 { margin:0; font-size:1.6em; letter-spacing:1px; }
-nav a { color:#66fcf1; text-decoration:none; font-weight:600; margin-left:20px; }
-nav a:hover { color:#45a29e; }
-
-.league { margin:20px auto; width:90%; background:#171a21; border-radius:12px; padding:12px 20px; box-shadow:0 0 10px rgba(255,255,255,0.05);}
-.league h2 { text-transform:uppercase; margin:5px 0 12px; font-size:1.25em; }
-.match { background:#222831; padding:12px; border-radius:10px; margin:10px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; transition:0.2s; }
-.match span { display:block; margin:3px 0; }
-.match:hover { background:#2e333f; }
-
-button { background:#45a29e; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s; }
-button:hover { background:#66fcf1; color:#000; }
-
-.modal { display:none; position:fixed; z-index:10; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.8); justify-content:center; align-items:center; }
-.modal-content { background:#1f2833; border-radius:15px; padding:20px; width:90%; max-width:450px; text-align:left; }
-.modal-content h3 { margin-top:0; }
-.close { background:#c3073f; float:right; padding:5px 10px; border-radius:6px; cursor:pointer; }
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-    header { flex-direction: column; align-items: flex-start; padding: 10px; }
-    header h1 { font-size: 1.3em; margin-bottom: 5px; }
-    nav a { margin-left: 0; margin-right: 15px; display:inline-block; margin-bottom:5px; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fútbol Hoy - DatoApuesta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1c1c1c;
+      color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0d47a1;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.5em;
+    }
+    .partido {
+      background: #2c2c2c;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .partido span {
+      display: block;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+    @media (max-width: 600px) {
+      .partido {
+        font-size: 0.9em;
+      }
+    }
+  </style>
 </head>
 <body>
+  <header>Fútbol Hoy - 29/10/2025</header>
+  <div id="partidos"></div>
 
-<header>
-<h1>Dato Apuesta ⚽ Agenda de Hoy</h1>
-<nav>
-  <a href="live.html">Ver Fútbol en Vivo</a>
-</nav>
-</header>
+  <script>
+  const partidosHoy = [
+    {"country":"Argentina","league":"Primera","home":"Boca Juniors","away":"Racing Club","time":"19:30"},
+    {"country":"Argentina","league":"Primera B Nacional","home":"Belgrano","away":"Sarmiento","time":"17:00"},
+    {"country":"Argentina","league":"B Metropolitana","home":"All Boys","away":"Atlanta","time":"15:00"},
 
-<div id="matches"></div>
+    {"country":"Brasil","league":"Serie A","home":"Fluminense","away":"Ceará","time":"19:00"},
+    {"country":"Brasil","league":"Serie A","home":"Flamengo","away":"Palmeiras","time":"21:00"},
+    {"country":"Brasil","league":"Serie B","home":"Cruzeiro","away":"Vasco","time":"18:00"},
 
-<div id="statsModal" class="modal">
-<div class="modal-content">
-<button class="close" onclick="closeModal()">Cerrar</button>
-<h3 id="modalTitle">Estadísticas del Partido</h3>
-<div id="modalBody">Cargando...</div>
-</div>
-</div>
+    {"country":"Chile","league":"Primera","home":"Colo Colo","away":"Universidad de Chile","time":"18:00"},
+    {"country":"Chile","league":"Primera B","home":"Ñublense","away":"Deportes Copiapó","time":"16:30"},
 
-<script>
-const API_KEY = "456b7873e0b045fc9a59963b3f9e3ed8";
-const matchesDiv = document.getElementById("matches");
-const ligasPermitidas = ["Serie A","Serie B","Ligue 1","Serie A2","Primera Division","Premier League","La Liga","Bundesliga"];
+    {"country":"Colombia","league":"Primera A","home":"Atlético Nacional","away":"Millonarios","time":"19:00"},
+    {"country":"Colombia","league":"Primera B","home":"Boyacá Chicó","away":"Cúcuta","time":"17:30"},
 
-async function getMatches(){
-  try{
-    const today = new Date().toISOString().split("T")[0];
-    const res = await fetch(`https://v3.football.api-sports.io/fixtures?date=${today}`,{
-      headers: { "x-apisports-key": API_KEY }
+    {"country":"Ecuador","league":"Serie A","home":"Independiente del Valle","away":"Emelec","time":"20:00"},
+    {"country":"Ecuador","league":"Serie B","home":"Manta","away":"Olmedo","time":"18:00"},
+
+    {"country":"Uruguay","league":"Primera","home":"Peñarol","away":"Nacional","time":"19:30"},
+    {"country":"Uruguay","league":"Segunda","home":"Cerrito","away":"Miramar","time":"17:00"},
+
+    {"country":"Perú","league":"Liga 1","home":"Alianza Lima","away":"Universitario","time":"20:00"},
+    {"country":"Perú","league":"Liga 2","home":"César Vallejo","away":"Sport Boys","time":"18:00"},
+
+    {"country":"Bolivia","league":"División Profesional","home":"The Strongest","away":"Oriente Petrolero","time":"19:00"},
+
+    {"country":"Venezuela","league":"Primera","home":"Caracas FC","away":"Deportivo Táchira","time":"18:00"},
+    {"country":"Venezuela","league":"Segunda","home":"Trujillanos","away":"Monagas","time":"16:30"},
+
+    {"country":"Italia","league":"Serie A","home":"Juventus","away":"Udinese","time":"18:30"},
+    {"country":"Italia","league":"Serie B","home":"Brescia","away":"Palermo","time":"16:00"},
+
+    {"country":"España","league":"LaLiga","home":"Barcelona","away":"Real Madrid","time":"18:00"},
+    {"country":"España","league":"LaLiga 2","home":"Almería","away":"Valladolid","time":"16:00"},
+
+    {"country":"Inglaterra","league":"Premier","home":"Manchester United","away":"Liverpool","time":"15:00"},
+    {"country":"Inglaterra","league":"Championship","home":"Sheffield United","away":"West Brom","time":"17:00"},
+
+    {"country":"Francia","league":"Ligue 1","home":"PSG","away":"Lyon","time":"20:00"},
+    {"country":"Francia","league":"Ligue 2","home":"Troyes","away":"Grenoble","time":"18:30"},
+
+    {"country":"Portugal","league":"Primeira","home":"Benfica","away":"Porto","time":"19:00"},
+    {"country":"Portugal","league":"Segunda","home":"Sporting Covilhã","away":"Académica","time":"17:30"},
+
+    {"country":"Alemania","league":"Bundesliga","home":"Bayern Munich","away":"Borussia Dortmund","time":"18:30"},
+    {"country":"Alemania","league":"Bundesliga 2","home":"Hamburgo","away":"Nürnberg","time":"16:00"},
+
+    {"country":"Bélgica","league":"Primera División","home":"Club Brugge","away":"Anderlecht","time":"19:00"},
+    {"country":"Holanda","league":"Eredivisie","home":"Ajax","away":"PSV","time":"18:30"},
+
+    {"country":"Arabia Saudita","league":"Saudi Pro League","home":"Al-Nassr","away":"Al-Hilal","time":"20:00"},
+
+    {"country":"Estados Unidos","league":"MLS","home":"Inter Miami","away":"LA Galaxy","time":"21:00"},
+
+    {"country":"México","league":"Liga MX","home":"América","away":"Chivas","time":"21:00"}
+  ];
+
+  function mostrarPartidos() {
+    const contenedor = document.getElementById("partidos");
+    contenedor.innerHTML = "";
+    partidosHoy.forEach(p => {
+      contenedor.innerHTML += `
+        <div class="partido">
+          <strong>${p.home}</strong> vs <strong>${p.away}</strong>
+          <span>(${p.country} - ${p.league})</span>
+          <span>${p.time} hrs</span>
+        </div>
+      `;
     });
-    const data = await res.json();
-
-    const filtered = data.response.filter(m => ligasPermitidas.includes(m.league.name));
-
-    const grouped = {};
-    filtered.forEach(m=>{
-      const country = m.league.country || "Other";
-      if(!grouped[country]) grouped[country]=[];
-      grouped[country].push(m);
-    });
-
-    matchesDiv.innerHTML="";
-    const now = new Date();
-    for(const country in grouped){
-      const div=document.createElement("div");
-      div.className="league";
-      div.innerHTML=`<h2>${country}</h2>`;
-      grouped[country].forEach(m=>{
-        const match=document.createElement("div");
-        const utcDate=new Date(m.fixture.date);
-        const localTime=new Intl.DateTimeFormat("es-AR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(utcDate);
-        match.className="match";
-        match.innerHTML=`
-          <div>
-            <span><b>${m.teams.home.name}</b> vs <b>${m.teams.away.name}</b></span>
-            <span>${localTime} hrs</span>
-            <span>${m.league.name}</span>
-          </div>
-          <button onclick="showStats(${m.teams.home.id},${m.teams.away.id},'${m.teams.home.name}','${m.teams.away.name}')">Ver estadísticas 📊</button>
-        `;
-        div.appendChild(match);
-      });
-      matchesDiv.appendChild(div);
-    }
-  }catch(err){
-    console.log(err);
-    matchesDiv.innerHTML="<p>Error al cargar los partidos. Revisa tu API Key y la conexión.</p>";
   }
-}
 
-async function showStats(homeId,awayId,homeName,awayName){
-  document.getElementById("modalTitle").innerText=`${homeName} vs ${awayName}`;
-  document.getElementById("modalBody").innerHTML="Cargando...";
-  try{
-    const res=await fetch(`https://v3.football.api-sports.io/fixtures/headtohead?h2h=${homeId}-${awayId}`,{
-      headers:{"x-apisports-key":API_KEY}
-    });
-    const data=await res.json();
-    if(!data.response || data.response.length===0){
-      document.getElementById("modalBody").innerHTML="<p>No hay datos de enfrentamientos.</p>";
-      return;
-    }
-
-    const ultimos=data.response.slice(0,5).map(f=>{
-      const fecha=new Date(f.fixture.date).toLocaleDateString();
-      return `${fecha} → ${f.teams.home.name} ${f.goals.home}-${f.goals.away} ${f.teams.away.name}`;
-    }).join("<br>");
-
-    function getForm(teamId){
-      const ultimos5=data.response.filter(d=>d.teams.home.id===teamId || d.teams.away.id===teamId).slice(0,5);
-      return ultimos5.map(g=>{
-        const esHome=g.teams.home.id===teamId;
-        const goles=esHome?[g.goals.home,g.goals.away]:[g.goals.away,g.goals.home];
-        if(goles[0]>goles[1]) return "🟢";
-        else if(goles[0]===goles[1]) return "🟡";
-        else return "🔴";
-      }).join("");
-    }
-
-    document.getElementById("modalBody").innerHTML=`
-      <p><b>Últimos enfrentamientos:</b><br>${ultimos}</p>
-      <p><b>Racha reciente:</b><br>${homeName}: ${getForm(homeId)}<br>${awayName}: ${getForm(awayId)}</p>
-    `;
-  }catch(err){
-    console.log(err);
-    document.getElementById("modalBody").innerHTML="<p>Error al cargar estadísticas.</p>";
-  }
-  document.getElementById("statsModal").style.display="flex";
-}
-
-function closeModal(){ document.getElementById("statsModal").style.display="none"; }
-
-getMatches();
-</script>
+  window.onload = mostrarPartidos;
+  </script>
 </body>
 </html>
